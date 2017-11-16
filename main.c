@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "tinyexpr.h"
+
 /// Integration method: Simpson Second Rule
 /// Developed by:
 ///     Antônio Carlos
@@ -8,23 +10,86 @@
 ///     Gustavo Loschi
 ///     Ryan Lemes
 /// For Numeral calculus discipline
+float Simpson_Second_Rule(double *yi, double *ci, int n, float h)
+{
+    float somatorio = 0, divisao;
+    int i;
+
+    divisao = (3*h)/8;
+
+    for(i = 0; i <= n; i++)
+    {
+        somatorio += (yi[i] * ci[i]);
+    }
+    return (divisao * somatorio);
+}
+
 
 int main()
 {
-    float h, x, SomaMultiplo3, SomanaoMultiplo3, R;
+    float espacamento, resultado;
+    float a, b;
+    double *ci;
+    double *yi;
+    double *xi;
     int i, n;
 
+    ///Variaveis para Resolução de Função
+    double x;
+    int error;
+    char expres[256];
 
-    if(n == 0)
-        printf("Divisão por zero!");
-    else if(n < 0)
-        printf("Intervalo Inválido");
-    else
+    printf("Digite expressao: \n");
+    scanf("%s", expres);
+
+    te_variable variavel[]  = {{"x", &x}};
+    te_expr * funcao = te_compile(expres, variavel, 1, &error);
+    ///--------------------------------
+    if(funcao)
     {
-        if(n % 3 != 0)
-            n = 3 * (n / 3) + 1)
-        h = ()
+        /// Pegar valores de a, b e n
+        printf("Digite a: \n");
+        scanf("%f", &a);
+
+        printf("Digite b: \n");
+        scanf("%f", &b);
+
+        printf("Digite n: \n");
+        scanf("%d", &n);
+
+        ci = (double*)calloc(n, sizeof(double));
+        yi = (double*)calloc(n, sizeof(double));
+        xi = (double*)calloc(n, sizeof(double));
+
+        espacamento = (b - a) / n;
+        xi[0] = a;
+        xi[n] = b;
+        ci[0] = ci[n] = 1;
+
+        x = a;
+        double resp = te_eval(funcao);
+        yi[0] = resp;
+
+        x = b;
+        yi[n] = resp = te_eval(funcao);
+
+        for(i = 1; i < n ; i++)
+        {
+            xi[i] = xi[i - 1] + espacamento;
+
+            x = xi[i];
+            yi[i] = resp = te_eval(funcao);
+
+            if(i % 3 == 0)
+                ci[i] = 2;
+            else
+                ci[i] = 3;
+        }
     }
 
-    return 0;
+    resultado = Simpson_Second_Rule(yi, ci, n, espacamento);
+
+    printf("\nO resultado da integral eh: %f\n\n", resultado);
+
+    return 42;
 }
