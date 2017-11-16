@@ -3,12 +3,11 @@
 
 /// Integration method: Simpson Second Rule
 /// Developed by:
+///     Ant√¥nio Carlos
+///     Diogo Alves
 ///     Gustavo Loschi
 ///     Ryan Lemes
 /// For Numeral calculus discipline
-
-
-
 
 int main()
 {
@@ -17,16 +16,15 @@ int main()
 
 
     if(n == 0)
-        printf("Divis„o por Zero!");
+        printf("Divis√£o por zero!");
     else if(n < 0)
-        printf("Intervalo Inv·lido");
+        printf("Intervalo Inv√°lido");
     else
     {
         if(n % 3 != 0)
             n = 3 * (n / 3) + 1)
         h = ()
     }
-
 
     return 0;
 }
