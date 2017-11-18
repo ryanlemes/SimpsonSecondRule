@@ -10,6 +10,25 @@
 ///     Gustavo Loschi
 ///     Ryan Lemes
 /// For Numeral calculus discipline
+
+void Menu()
+{
+    system("cls");
+    printf("Trabalho desenvolvido por:\n");
+    printf("Antonio Carlos\n");
+    printf("Diogo Alves\n");
+    printf("Gustavo Loschi\n");
+    printf("Ryan Lemes\n");
+    system("pause");
+
+    system("cls");
+    printf("\n\n\n");
+    printf("Segunda Regra de Simpson (nao é aquele simpson)\n");
+    system("pause");
+
+}
+
+
 float Simpson_Second_Rule(double *yi, double *ci, int n, float h)
 {
     float somatorio = 0, divisao;
@@ -34,12 +53,14 @@ int main()
     double *xi;
     int i, n;
 
+    Menu();
+
     ///Variaveis para Resolução de Função
     double x;
     int error;
     char expres[256];
 
-    printf("Digite expressao: \n");
+    printf("Digite expressao da integral: \n");
     scanf("%s", expres);
 
     te_variable variavel[]  = {{"x", &x}};
@@ -48,13 +69,13 @@ int main()
     if(funcao)
     {
         /// Pegar valores de a, b e n
-        printf("Digite a: \n");
+        printf("Digite a (primeiro intervalo da integral): \n");
         scanf("%f", &a);
 
-        printf("Digite b: \n");
+        printf("Digite b (segundo intervalo da integral): \n");
         scanf("%f", &b);
 
-        printf("Digite n: \n");
+        printf("Digite n (numero de subintervalos): \n");
         scanf("%d", &n);
 
         ci = (double*)calloc(n, sizeof(double));

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1510803830 source:c:\users\ryanl\documents\college\projetos cálculo numérico\simpsonsecondrule\main.c
+1510833591 source:c:\users\ryanl\documents\college\projetos cálculo numérico\simpsonsecondrule\main.c
 	<stdio.h>
 	<stdlib.h>
 	"tinyexpr.h"
