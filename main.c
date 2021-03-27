@@ -3,114 +3,133 @@
 
 #include "tinyexpr.h"
 
-/// Integration method: Simpson Second Rule
+/// Integration method: Simpson Second Rule or Simpson's 3/8 rule
 /// Developed by:
-///     Antônio Carlos
-///     Diogo Alves
-///     Gustavo Loschi
 ///     Ryan Lemes
 /// For Numeral calculus discipline
 
-void Menu()
-{
-    system("cls");
-    printf("Trabalho desenvolvido por:\n");
-    printf("Antonio Carlos\n");
-    printf("Diogo Alves\n");
-    printf("Gustavo Loschi\n");
-    printf("Ryan Lemes\n");
-    system("pause");
+const MAX_STRING_EXPRESSION = 265;
 
-    system("cls");
-    printf("\n\n\n");
-    printf("Segunda Regra de Simpson (nao é aquele simpson)\n");
-    system("pause");
-
-}
-
-
+/**
+ *  Calculate the Simpson's second rule or Simpson 3/8 rule
+ *  params: 
+ *  *yi - 
+ *  *ci - 
+ *  n   - The number of intervals to calculate 
+ *  h   - The midpoint of all the intervals between the first and the second interval
+ *  returns: 
+ */
 float Simpson_Second_Rule(double *yi, double *ci, int n, float h)
 {
-    float somatorio = 0, divisao;
+    float sum = 0, division;
     int i;
 
-    divisao = (3*h)/8;
+    division = (3 * h)/8;
 
-    for(i = 0; i <= n; i++)
+    for (i = 0; i <= n; i++)
     {
-        somatorio += (yi[i] * ci[i]);
+        sum += (yi[i] * ci[i]);
     }
-    return (divisao * somatorio);
+    return (division * sum);
 }
 
+/*
+ * Initialize the variables 
+ */
+void initialize(double *ci, double *yi, double *xi, int n, double x, float midpointIntervals, te_expr *funcao) {
+    // Intervals
+    float a, b;
+
+    /// Take the values of a, b and n
+    printf("First integral interval (a): \n");
+    scanf("%f", &a);
+
+    printf("Second integral interval (b): \n");
+    scanf("%f", &b);
+
+    printf("n value (number of subintervals): \n");
+    scanf("%d", &n);
+
+    ci = (double*)calloc(n, sizeof(double));
+    yi = (double*)calloc(n, sizeof(double));
+    xi = (double*)calloc(n, sizeof(double));
+
+    // Calculate the midpoint between A and B with the number of intervals(n)
+    midpointIntervals = (b - a) / n;
+
+    // Set the first position of x1 as a and the last as b
+    xi[0] = a;
+    xi[n] = b;
+    
+    // The first and the last value of ci must be 1 as described on the rule
+    ci[0] = ci[n] = 1;
+
+    x = a;
+    // Evaluate the function setting x to the value of A and put it on answ
+    double answ = te_eval(funcao);
+    
+    // set anw of a to the first position of yi
+    yi[0] = answ;
+
+    x = b;
+    // Evaluate the function using the value of x as B and set it to the last position of yi
+    yi[n] = answ = te_eval(funcao);
+
+    // Iterate 1 until n
+    for(int i = 1; i < n ; i++)
+    {
+        xi[i] = xi[i - 1] + midpointIntervals;
+
+        x = xi[i];
+        yi[i] = answ = te_eval(funcao);
+
+        if(i % 3 == 0)
+            ci[i] = 2;
+        else
+            ci[i] = 3;
+    }
+}
 
 int main()
 {
-    float espacamento, resultado;
-    float a, b;
+    float midpointIntervals, result;
+
     double *ci;
     double *yi;
     double *xi;
-    int i, n;
+    
+    int n;
 
-    Menu();
-
-    ///Variaveis para Resolução de Função
+    /// variables to resolute the function
     double x;
     int error;
-    char expres[256];
+    char expres[MAX_STRING_EXPRESSION];
 
-    printf("Digite expressao da integral: \n");
+    printf("Expression: \n");
     scanf("%s", expres);
 
+    // Use library tiny expt to create the expression and validate.
+    // Split all the variables on expres based on 'x'.
     te_variable variavel[]  = {{"x", &x}};
-    te_expr * funcao = te_compile(expres, variavel, 1, &error);
-    ///--------------------------------
-    if(funcao)
+
+    // Create a function to calculate
+    te_expr *funcao = te_compile(expres, variavel, 1, &error);
+
+    // Check if the function is not wrong
+    if (funcao)
     {
-        /// Pegar valores de a, b e n
-        printf("Digite a (primeiro intervalo da integral): \n");
-        scanf("%f", &a);
-
-        printf("Digite b (segundo intervalo da integral): \n");
-        scanf("%f", &b);
-
-        printf("Digite n (numero de subintervalos): \n");
-        scanf("%d", &n);
-
-        ci = (double*)calloc(n, sizeof(double));
-        yi = (double*)calloc(n, sizeof(double));
-        xi = (double*)calloc(n, sizeof(double));
-
-        espacamento = (b - a) / n;
-        xi[0] = a;
-        xi[n] = b;
-        ci[0] = ci[n] = 1;
-
-        x = a;
-        double resp = te_eval(funcao);
-        yi[0] = resp;
-
-        x = b;
-        yi[n] = resp = te_eval(funcao);
-
-        for(i = 1; i < n ; i++)
-        {
-            xi[i] = xi[i - 1] + espacamento;
-
-            x = xi[i];
-            yi[i] = resp = te_eval(funcao);
-
-            if(i % 3 == 0)
-                ci[i] = 2;
-            else
-                ci[i] = 3;
-        }
+        initialize(ci, yi, xi, n, x, midpointIntervals, funcao);
+    } 
+    else 
+    {
+        printf("\nError on create the function with error code: " + error);
+        return error;
     }
 
-    resultado = Simpson_Second_Rule(yi, ci, n, espacamento);
+    // Calculate the integral using Simpson second rule
+    result = Simpson_Second_Rule(yi, ci, n, midpointIntervals);
 
-    printf("\nO resultado da integral eh: %f\n\n", resultado);
+    printf("\nThe integration result is: %f\n\n", result);
 
-    return 42;
+    return 0;
 }
