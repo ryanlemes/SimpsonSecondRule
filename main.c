@@ -39,7 +39,8 @@ float Simpson_Second_Rule(double *yi, double *ci, int n, float h)
 void initialize(double *ci, double *yi, double *xi, int n, double x, float midpointIntervals, te_expr *funcao) {
     // Intervals
     float a, b;
-
+    int i;
+    
     /// Take the values of a, b and n
     printf("First integral interval (a): \n");
     scanf("%f", &a);
@@ -76,7 +77,7 @@ void initialize(double *ci, double *yi, double *xi, int n, double x, float midpo
     yi[n] = answ = te_eval(funcao);
 
     // Iterate 1 until n
-    for(int i = 1; i < n ; i++)
+    for(i = 1; i < n ; i++)
     {
         xi[i] = xi[i - 1] + midpointIntervals;
 
